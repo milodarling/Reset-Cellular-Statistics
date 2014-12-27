@@ -1,0 +1,9 @@
+Package: com.greeny.autostatisticsreset
+Name: AutoStatisticsReset
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: GreenyDev
+Author: GreenyDev
+Section: Tweaks
