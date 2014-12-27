@@ -1,0 +1,6 @@
+.theos
+obj
+_
+theos
+Packages
+*.sublime-*
