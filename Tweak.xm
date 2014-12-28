@@ -43,6 +43,17 @@ You need to put this somewhere where it runs every day. This will check if the c
 if (shouldResetData()) { 
   resetData();
 }
+*/
 
+/*
+NSTimer *timer;
+
+    timer = [NSTimer scheduledTimerWithTimeInterval: 86400
+                     target: self
+                     selector: @selector(handleTimer:)
+                     userInfo: nil
+                     repeats: YES];
+
+  Would something like this work?
 */
 
