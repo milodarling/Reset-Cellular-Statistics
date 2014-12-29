@@ -1,6 +1,11 @@
 static BOOL enabled;
 static NSInteger *resetDate;
 
+@interface SettingsNetworkController
+-(void)clearStats:(id)arg1;
++(id)sharedInstance;
+@end
+
 @interface timerClass : NSObject
 - (void)timer;
 @end
@@ -38,7 +43,7 @@ static BOOL shouldResetData() {
 }
 
 static void resetData() { //call your method to reset data (there should be an instance of SettingsNetworkController that you can hook into here)
-[[%c(SettingsNetworkController) sharedInstance] SettingsNetworkController clearStats];
+  [[%c(SettingsNetworkController) sharedInstance] clearStats:nil];
 }
 
 //method should reset data usage
