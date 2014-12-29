@@ -1,74 +1,95 @@
+#import <UIKit/UIKit.h>
+
 static BOOL enabled;
 static NSInteger resetDate;
-static NSTimer *resetTimer;
 
-@interface SettingsNetworkController
+@interface SettingsNetworkController : UIViewController
 -(void)clearStats:(id)arg1;
 +(id)sharedInstance;
+-(id)init;
 @end
-
-@interface timerClass : NSObject
-- (void)timer;
-@end
-
-@implementation timerClass
-- (void)timer{
-  NSTimer *timer;
-
-  timer = [NSTimer scheduledTimerWithTimeInterval: 86400
-    target: self
-    selector: @selector(handleTimer:)
-    userInfo: nil
-    repeats: YES];
-}
-@end
-//hi
 
 static void loadPreferences() {
   CFPreferencesAppSynchronize(CFSTR("com.greeny.autostatisticsreset"));
       //In this case, you get the value for the key "enabled"
       //you could do the same thing for any other value, just cast it to id and use the conversion methods
       //if the value doesn't exist (i.e. the user hasn't changed their preferences), it is set to the value after the "?:" (in this case, YES and @"default", respectively
-  enabled = [(id)CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR("com.greeny.autostatisticsreset")) boolValue];
-  resetDate = [[NSNumber numberWithString:(NSString*)CFPreferencesCopyAppValue(CFSTR("resetDate"), CFSTR("com.greeny.autostatisticsreset"))] integerValue];
+  enabled = [(NSNumber*)CFPreferencesCopyAppValue(CFSTR("enabled"), CFSTR("com.greeny.autostatisticsreset")) boolValue];
+  NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+  [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+  resetDate = [[formatter numberFromString:(NSString*)CFPreferencesCopyAppValue(CFSTR("resetDate"), CFSTR("com.greeny.autostatisticsreset"))] integerValue];
 }
 
 static BOOL shouldResetData() {
   NSCalendar *calendar = [NSCalendar autoupdatingCurrentCalendar]; //current user calendar
   NSDateComponents *dateComponents = [calendar components:(NSCalendarUnitDay) fromDate:[NSDate date]]; //separates NSDate into components
   if (resetDate == dateComponents.day) { //compare date from prefs to current date
-    return TRUE; //dates match
+    return TRUE; //dates match 
   } else {
     return FALSE; //dates do not match
   }
 }
 
 static void resetData() { //call your method to reset data (there should be an instance of SettingsNetworkController that you can hook into here)
+  //logic to reset data
   [[%c(SettingsNetworkController) sharedInstance] clearStats:nil];
 }
 
-//method should reset data usage
-%hook SettingsNetworkController
-static SettingsNetworkController *__weak sharedInstance;
--(id)init {
-  id original = %orig;
-  sharedInstance = original;
-return original;
+@interface RCSTimer : NSObject
+{
+  NSTimer *resetTimer;
 }
 
--(void)loadView {
-   if (resetTimer) {
++ (instancetype)sharedInstance;
+- (void)startTimer;
+- (void)resetTimer;
+- (void)checkDates:(id)sender;
+@end
+
+@implementation RCSTimer 
+
++ (instancetype)sharedInstance {
+  static dispatch_once_t pred;
+  static RCSTimer *shared = nil;
+   
+  dispatch_once(&pred, ^{
+    shared = [[RCSTimer alloc] init];
+  });
+  return shared;
+}
+
+- (void)startTimer {
+  [self resetTimer];
+  resetTimer = [NSTimer scheduledTimerWithTimeInterval:24.0 * 60.0 * 60.0 target:self selector:@selector(checkDates:) userInfo:nil repeats:YES];
+}
+
+- (void)resetTimer {
+  if (resetTimer) {
     [resetTimer invalidate];
     resetTimer = nil;
   }
-
-  resetTimer = [NSTimer scheduledTimerWithTimeInterval:24.0 * 60.0 * 60.0 target:self selector:@selector(checkDates:) userInfo:nil repeats:YES];
-  %orig;
 }
 
+- (void)checkDates:(id)sender {
+  if (shouldResetData()) { 
+    resetData();
+  }
+}
+
+@end
+
+//method should reset data usage
+%hook SettingsNetworkController 
+
 %new
-+(id)sharedInstance{
-  return sharedInstance;
++(id)sharedInstance {
+  static dispatch_once_t pred;
+  static SettingsNetworkController *shared = nil;
+   
+  dispatch_once(&pred, ^{
+    shared = [[SettingsNetworkController alloc] init];
+  });
+  return shared;
 }
 %end
 
@@ -76,29 +97,13 @@ return original;
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
                                 NULL,
                                 (CFNotificationCallback)loadPreferences,
-                                CFSTR("com.greeny.autostatisticsreset/prefsChanged"),
+                                CFSTR("com.greeny.siribar/prefsChanged"),
                                 NULL,
                                 CFNotificationSuspensionBehaviorDeliverImmediately);
     loadPreferences();
+
+  BOOL invalidForStart = (!resetDate || resetDate == 0);
+  if (!invalidForStart) {
+    [[RCSTimer sharedInstance] startTimer];
+  }
 }
-
-/*
-You need to put this somewhere where it runs every day. This will check if the current date is the reset date and then run your reset logic if it is.
-
-if (shouldResetData()) { 
-  resetData();
-}
-*/
-
-/*
-NSTimer *timer;
-
-    timer = [NSTimer scheduledTimerWithTimeInterval: 86400
-                     target: self
-                     selector: @selector(handleTimer:)
-                     userInfo: nil
-                     repeats: YES];
-
-  Would something like this work?
-*/
-
