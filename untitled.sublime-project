@@ -4,6 +4,10 @@
 		{
 			"follow_symlinks": true,
 			"path": "/Users/GreenyDev/CydiaProjects"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/GreenyDev/CydiaProjects/Firmware/iOS8/DataMind"
 		}
 	]
 }
