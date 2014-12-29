@@ -87,7 +87,7 @@ static void resetData() { //call your method to reset data (there should be an i
   static SettingsNetworkController *shared = nil;
    
   dispatch_once(&pred, ^{
-    shared = [[SettingsNetworkController alloc] init];
+    shared = [[%c(SettingsNetworkController) alloc] init];
   });
   return shared;
 }

@@ -3,7 +3,8 @@ Name: AutoStatisticsReset
 Depends: mobilesubstrate, com.a3tweaks.flipswitch
 Version: 0.0.1
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
+Description: Automatically reset Cellular statistics on a certain day!
 Maintainer: GreenyDev
 Author: GreenyDev
+Depiction: http://greenydev.github.io/repo/autostatisticsreset/index.html
 Section: Tweaks

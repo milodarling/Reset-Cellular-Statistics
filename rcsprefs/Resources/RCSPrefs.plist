@@ -7,8 +7,6 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>RCSPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -26,6 +24,24 @@
 			<key>placeholder</key>
 			<string>01</string>
 		</dict>
+						<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+				<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>RCSDevelopersListController</string>
+			<key>label</key>
+			<string>Developers</string>
+		</dict>
+				<dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerText</key>
+            <string>Respring now to apply changes and check current date. Changes can take up to a day to apply without a respring.</string>
+        </dict>
 		<dict>
             <key>cell</key>
             <string>PSButtonCell</string>
@@ -34,8 +50,29 @@
             <key>action</key>
             <string>respring</string>
         </dict>
+        		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+
+         <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerText</key>
+            <string>If you appreciate my work, please use this button to donate to me.</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>icon</key>
+            <string>paypal.png</string>
+            <key>label</key>
+            <string>Donate</string>
+            <key>action</key>
+            <string>donate</string>
+        </dict>
 	</array>
 	<key>title</key>
-	<string>RCSPrefs</string>
+	<string>AutoStatisticsReset</string>
 </dict>
 </plist>
