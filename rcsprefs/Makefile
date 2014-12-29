@@ -1,7 +1,5 @@
 ARCHS = armv7 arm64
 TARGET = iphone:clang:latest:latest
-THEOS_BUILD_DIR = Packages
-GO_EASY_ON_ME = 1
 
 include theos/makefiles/common.mk
 
@@ -10,6 +8,7 @@ RCSPrefs_FILES = RCSPrefs.mm
 RCSPrefs_INSTALL_PATH = /Library/PreferenceBundles
 RCSPrefs_FRAMEWORKS = UIKit
 RCSPrefs_PRIVATE_FRAMEWORKS = Preferences
+RCSPrefs_LIBRARIES = flipswitch
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

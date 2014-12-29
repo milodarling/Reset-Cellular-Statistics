@@ -1,5 +1,6 @@
 static BOOL enabled;
-static NSInteger *resetDate;
+static NSInteger resetDate;
+static NSTimer *resetTimer;
 
 @interface SettingsNetworkController
 -(void)clearStats:(id)arg1;
@@ -21,7 +22,7 @@ static NSInteger *resetDate;
     repeats: YES];
 }
 @end
-
+//hi
 
 static void loadPreferences() {
   CFPreferencesAppSynchronize(CFSTR("com.greeny.autostatisticsreset"));
@@ -55,6 +56,16 @@ static SettingsNetworkController *__weak sharedInstance;
 return original;
 }
 
+-(void)loadView {
+   if (resetTimer) {
+    [resetTimer invalidate];
+    resetTimer = nil;
+  }
+
+  resetTimer = [NSTimer scheduledTimerWithTimeInterval:24.0 * 60.0 * 60.0 target:self selector:@selector(checkDates:) userInfo:nil repeats:YES];
+  %orig;
+}
+
 %new
 +(id)sharedInstance{
   return sharedInstance;
@@ -69,8 +80,6 @@ return original;
                                 NULL,
                                 CFNotificationSuspensionBehaviorDeliverImmediately);
     loadPreferences();
-
-  [timerClass timer];
 }
 
 /*
